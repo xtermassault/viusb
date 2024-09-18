@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     USBWidget widget;
-    widget.setWindowTitle("USB Devices");
+    widget.setWindowTitle("viusb");
     widget.resize(840, 500);
     widget.setFixedSize(widget.size());
     widget.setWindowFlags(widget.windowFlags() & ~Qt::WindowMaximizeButtonHint);
