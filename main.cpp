@@ -10,15 +10,21 @@
 
 class USBWidget : public QWidget {
 public:
-    USBWidget(QWidget *parent = nullptr) : QWidget(parent) {
+    USBWidget(QWidget *parent = nullptr) : QWidget(parent), firstRun(true) {
         QVBoxLayout *layout = new QVBoxLayout(this);
         usbTree = new QTreeWidget(this);
         usbTree->setHeaderLabels(QStringList() << "Device" << "Bus" << "Vendor ID" << "Product ID");
         layout->addWidget(usbTree);
         usbTree->setColumnWidth(0, 510);
+        QPalette palette = usbTree->palette();
+        palette.setColor(QPalette::Base, QColor(53, 53, 53));
+        palette.setColor(QPalette::Text, Qt::white);
+        usbTree->setPalette(palette);
+
         QTimer *updateTimer = new QTimer(this);
         connect(updateTimer, &QTimer::timeout, this, &USBWidget::refreshUSBInfo);
-        updateTimer->start(20);
+        updateTimer->start(200);
+
         previousDevices = QMap<QString, QTreeWidgetItem*>();
     }
 
@@ -60,6 +66,7 @@ private:
     void updateDeviceTree(const QMap<QString, QStringList>& currentDevices) {
         QList<QString> newDevices;
         QList<QString> removedDevices;
+        
         for (const QString& key : currentDevices.keys()) {
             if (!previousDevices.contains(key)) {
                 newDevices.append(key);
@@ -70,6 +77,7 @@ private:
                 removedDevices.append(key);
             }
         }
+
         for (const QString& key : removedDevices) {
             previousDevices[key]->setBackground(0, Qt::red);
             previousDevices[key]->setBackground(1, Qt::red);
@@ -80,6 +88,7 @@ private:
                 previousDevices.remove(key);
             });
         }
+
         for (const QString& key : newDevices) {
             QStringList deviceInfo = currentDevices[key];
             QTreeWidgetItem *item = new QTreeWidgetItem(usbTree);
@@ -87,24 +96,40 @@ private:
             item->setText(1, deviceInfo[1]);
             item->setText(2, deviceInfo[2]);
             item->setText(3, deviceInfo[3]);
-            item->setBackground(0, Qt::green);
-            item->setBackground(1, Qt::green);
-            item->setBackground(2, Qt::green);
-            item->setBackground(3, Qt::green);
+
+            if (!firstRun) {
+                item->setBackground(0, Qt::green);
+                item->setBackground(1, Qt::green);
+                item->setBackground(2, Qt::green);
+                item->setBackground(3, Qt::green);
+                QTimer::singleShot(5000, [item]() {
+                    item->setBackground(0, QColor(53, 53, 53));
+                    item->setBackground(1, QColor(53, 53, 53));
+                    item->setBackground(2, QColor(53, 53, 53));
+                    item->setBackground(3, QColor(53, 53, 53));
+                    item->setForeground(0, Qt::white);
+                    item->setForeground(1, Qt::white);
+                    item->setForeground(2, Qt::white);
+                    item->setForeground(3, Qt::white);
+                });
+
+            }
+
+            item->setForeground(0, Qt::white);
+            item->setForeground(1, Qt::white);
+            item->setForeground(2, Qt::white);
+            item->setForeground(3, Qt::white);
 
             previousDevices[key] = item;
-            QTimer::singleShot(5000, this, [item]() {
-                item->setBackground(0, Qt::white);
-                item->setBackground(1, Qt::white);
-                item->setBackground(2, Qt::white);
-                item->setBackground(3, Qt::white);
-            });
         }
+
+        firstRun = false;
     }
 
 private:
     QTreeWidget *usbTree;
     QMap<QString, QTreeWidgetItem*> previousDevices;
+    bool firstRun;
 };
 
 int main(int argc, char *argv[]) {
@@ -120,4 +145,3 @@ int main(int argc, char *argv[]) {
 
     return app.exec();
 }
-
