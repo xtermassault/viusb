@@ -9,7 +9,7 @@
 class USBSysFS : public USBInterface {
 public:
     void populateUSBTree(QTreeWidget *usbTree) override {
-        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Vendor ID" << "Product ID" << "Description");
+        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Description" << "Vendor ID" << "Product ID" );
 
         QDir dir("/sys/bus/usb/devices");
         QStringList devices = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -53,7 +53,6 @@ public:
             item->setText(2, description);
             item->setText(3, vendorId);
             item->setText(4, productId);
-
 
             QString key = QString("%1-%2").arg(busNumber, deviceNumber);
             sortedItems[key] = item;
