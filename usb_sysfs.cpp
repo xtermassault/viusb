@@ -9,7 +9,7 @@
 class USBSysFS : public USBInterface {
 public:
     void populateUSBTree(QTreeWidget *usbTree) override {
-        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Description" << "Vendor ID" << "Product ID"  );
+        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Vendor ID" << "Product ID" << "Description");
 
         QDir dir("/sys/bus/usb/devices");
         QStringList devices = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -23,7 +23,6 @@ public:
             QString productId = readUsbInfo(devicePath, "idProduct");
             QString manufacturer = readUsbInfo(devicePath, "manufacturer");
             QString product = readUsbInfo(devicePath, "product");
-            QString serialNumber = readUsbInfo(devicePath, "serial");
             QString busNumber = QString("%1").arg(readUsbInfo(devicePath, "busnum").toInt(), 3, 10, QChar('0'));
             QString deviceNumber = QString("%1").arg(readUsbInfo(devicePath, "devnum").toInt(), 3, 10, QChar('0'));
 
@@ -37,13 +36,23 @@ public:
                 manufacturer = fallback.section('(', 1, 1).remove(')').trimmed();
             }
 
+            QString description;
+            if (!product.isEmpty() && !manufacturer.isEmpty()) {
+                description = QString("%1 %2").arg(manufacturer, product);
+            } else if (!manufacturer.isEmpty()) {
+                description = manufacturer;
+            } else if (!product.isEmpty()) {
+                description = product;
+            } else {
+                description = "Unknown";
+            }
+
             QTreeWidgetItem *item = new QTreeWidgetItem();
             item->setText(0, busNumber.isEmpty() ? "Unknown" : busNumber);
             item->setText(1, deviceNumber.isEmpty() ? "Unknown" : deviceNumber);
-            item->setText(2, QString("%1 %2").arg(product.isEmpty() ? " " : product, manufacturer.isEmpty() ? "Unknown" : manufacturer));
+            item->setText(2, description);
             item->setText(3, vendorId);
             item->setText(4, productId);
-
 
 
             QString key = QString("%1-%2").arg(busNumber, deviceNumber);
@@ -96,11 +105,11 @@ private:
 
         usbIds.close();
         if (!vendor.isEmpty() && !product.isEmpty()) {
-            return QString("%2 %1").arg(product, vendor);
+            return QString("%1 (%2)").arg(product, vendor);
         } else if (!vendor.isEmpty()) {
-            return QString("%1").arg(vendor);
+            return QString(vendor);
         }
-        return "Unknown (Unknown)";
+        return "Unknown";
     }
 };
 
