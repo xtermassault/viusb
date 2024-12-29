@@ -12,7 +12,7 @@ public:
     USBSysFS() : usbTree(nullptr) {
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &USBSysFS::refreshUSBTree);
-        timer->start(1000); // Сканируем раз в 1 секунду
+        timer->start(1000);
     }
 
     void populateUSBTree(QTreeWidget *tree) override {
@@ -45,7 +45,7 @@ private:
             QString deviceNumber = QString("%1").arg(readUsbInfo(devicePath, "devnum").toInt(), 3, 10, QChar('0'));
 
             if (vendorId.isEmpty() || productId.isEmpty()) {
-                continue; // Пропускаем устройства без Vendor ID и Product ID
+                continue;
             }
 
             QString description = (!product.isEmpty() && !manufacturer.isEmpty())
