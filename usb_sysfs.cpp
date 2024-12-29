@@ -9,7 +9,7 @@
 class USBSysFS : public USBInterface {
 public:
     void populateUSBTree(QTreeWidget *usbTree) override {
-        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Vendor ID" << "Product ID" << "Description" << "Serial Number");
+        usbTree->setHeaderLabels(QStringList() << "Bus" << "Device" << "Description" << "Vendor ID" << "Product ID"  );
 
         QDir dir("/sys/bus/usb/devices");
         QStringList devices = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -27,9 +27,6 @@ public:
             QString busNumber = QString("%1").arg(readUsbInfo(devicePath, "busnum").toInt(), 3, 10, QChar('0'));
             QString deviceNumber = QString("%1").arg(readUsbInfo(devicePath, "devnum").toInt(), 3, 10, QChar('0'));
 
-
-
-
             if (vendorId.isEmpty() || productId.isEmpty()) {
                 continue;
             }
@@ -43,10 +40,11 @@ public:
             QTreeWidgetItem *item = new QTreeWidgetItem();
             item->setText(0, busNumber.isEmpty() ? "Unknown" : busNumber);
             item->setText(1, deviceNumber.isEmpty() ? "Unknown" : deviceNumber);
-            item->setText(2, vendorId);
-            item->setText(3, productId);
-            item->setText(4, QString("%1 (%2)").arg(product.isEmpty() ? "Unknown" : product, manufacturer.isEmpty() ? "Unknown" : manufacturer));
-            item->setText(5, serialNumber.isEmpty() ? "Unknown" : serialNumber);
+            item->setText(2, QString("%1 %2").arg(product.isEmpty() ? " " : product, manufacturer.isEmpty() ? "Unknown" : manufacturer));
+            item->setText(3, vendorId);
+            item->setText(4, productId);
+
+
 
             QString key = QString("%1-%2").arg(busNumber, deviceNumber);
             sortedItems[key] = item;
@@ -71,7 +69,7 @@ private:
         QFile usbIds("/usr/share/hwdata/usb.ids");
         if (!usbIds.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qWarning() << "Cannot open usb.ids file. File not found or permission denied.";
-            return "Unknown";
+            return "Unknown (Unknown)";
         }
 
         QTextStream in(&usbIds);
@@ -85,10 +83,10 @@ private:
                 continue;
             }
 
-            if (!foundVendor && line.startsWith(vendorId)) {
+            if (!line.startsWith("\t") && line.startsWith(vendorId + " ")) {
                 vendor = line.mid(5).trimmed();
                 foundVendor = true;
-            } else if (foundVendor && line.startsWith("\t" + productId)) {
+            } else if (foundVendor && line.startsWith("\t" + productId + " ")) {
                 product = line.mid(5).trimmed();
                 break;
             } else if (!line.startsWith("\t")) {
@@ -98,9 +96,11 @@ private:
 
         usbIds.close();
         if (!vendor.isEmpty() && !product.isEmpty()) {
-            return QString("%1 (%2)").arg(product, vendor);
+            return QString("%2 %1").arg(product, vendor);
+        } else if (!vendor.isEmpty()) {
+            return QString("%1").arg(vendor);
         }
-        return "Unknown";
+        return "Unknown (Unknown)";
     }
 };
 
