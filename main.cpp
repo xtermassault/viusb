@@ -2,7 +2,6 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QDebug>
 #include "usb_interface.h"
 
 class USBWidget : public QWidget {
@@ -10,13 +9,13 @@ public:
     USBWidget(QWidget *parent = nullptr) : QWidget(parent) {
         QVBoxLayout *layout = new QVBoxLayout(this);
         usbTree = new QTreeWidget(this);
-        usbTree->setHeaderLabels(QStringList() << "Vendor ID" << "Product ID" << "Device Description");
+        usbTree->setHeaderLabels(QStringList() << "Vendor ID" << "Product ID" << "Description" << "Serial Number");
         layout->addWidget(usbTree);
 
-        USBInterface *usbImpl = detectUSBImplementation();
+        USBInterface *usbImpl = createSysFS();
         if (usbImpl) {
             usbImpl->populateUSBTree(usbTree);
-            delete usbImpl; // Освобождаем ресурсы
+            delete usbImpl;
         } else {
             QTreeWidgetItem *item = new QTreeWidgetItem(usbTree);
             item->setText(0, "Error");
@@ -27,20 +26,13 @@ public:
 
 private:
     QTreeWidget *usbTree;
-
-    USBInterface* detectUSBImplementation() {
-        USBInterface *impl = createLibUSB();
-        if (impl) return impl;
-
-        return createSysFS();
-    }
 };
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     USBWidget widget;
-    widget.setWindowTitle("USB Viewer");
-    widget.resize(600, 400);
+    widget.setWindowTitle("cuteUSB (formerly viusb)");
+    widget.resize(800, 600);
     widget.show();
     return app.exec();
 }

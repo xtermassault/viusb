@@ -1,17 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ViUSB)
+project(USBViewer)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 
-set(SOURCES
+add_executable(usb_viewer
         main.cpp
-        usb_libusb.cpp
         usb_sysfs.cpp
 )
 
-add_executable(viusb ${SOURCES})
-
-target_link_libraries(viusb Qt5::Widgets Qt5::Core usb-1.0)
+target_link_libraries(usb_viewer Qt5::Widgets Qt5::Core)
