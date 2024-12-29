@@ -24,8 +24,11 @@ public:
             QString manufacturer = readUsbInfo(devicePath, "manufacturer");
             QString product = readUsbInfo(devicePath, "product");
             QString serialNumber = readUsbInfo(devicePath, "serial");
-            QString busNumber = readUsbInfo(devicePath, "busnum");
-            QString deviceNumber = readUsbInfo(devicePath, "devnum");
+            QString busNumber = QString("%1").arg(readUsbInfo(devicePath, "busnum").toInt(), 3, 10, QChar('0'));
+            QString deviceNumber = QString("%1").arg(readUsbInfo(devicePath, "devnum").toInt(), 3, 10, QChar('0'));
+
+
+
 
             if (vendorId.isEmpty() || productId.isEmpty()) {
                 continue;
