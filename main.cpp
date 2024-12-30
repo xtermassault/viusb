@@ -9,9 +9,10 @@ void setupMenuActions(Ui::MainWindow &ui, QMainWindow &mainWindow) {
 
     QObject::connect(ui.actionAbout, &QAction::triggered, [&]() {
         QMessageBox::about(&mainWindow, "About cuteUSB",
-                           "cuteUSB (formerly viusb)\n\n"
-                           "A USB device viewer application.\n\n"
-                           "Built using Qt for cross-platform development.");
+                           "cuteUSB v.0.2a\n\n"
+                           "by 0x64\n\n"
+                           "A visual 'lsusb' implementation. \n\n"
+                           "Powered by Qt. More info in About->About Qt section.\n\n");
     });
 
     QObject::connect(ui.actionAboutQt, &QAction::triggered, [&]() {

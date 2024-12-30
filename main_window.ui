@@ -21,10 +21,9 @@
                             <stringlist>
                                 <string>Bus</string>
                                 <string>Device</string>
+                                <string>Description</string>
                                 <string>Vendor ID</string>
                                 <string>Product ID</string>
-                                <string>Description</string>
-                                <string>Serial Number</string>
                             </stringlist>
                         </property>
                     </widget>

@@ -1,7 +1,8 @@
-## viusb - it's still lsusb, but with GUI!
+## cuteUSB (formerly viusb) - it's like lsusb, but with GUI!
 
-### GUI powered by Qt5-widgets
-![image](https://github.com/user-attachments/assets/b6ce0370-81f4-4d90-9036-05fa8bfe16a6)
+### GUI powered by Qt6-widgets
+
+![img.png](img.png)
 
 ### Building
 
@@ -10,8 +11,7 @@ mkdir build
 cd build
 cmake ..
 make
-./viusb
-
+./usb_viewer
 ```
 
 

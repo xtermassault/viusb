@@ -40,7 +40,6 @@ private:
             QString productId = readUsbInfo(devicePath, "idProduct");
             QString manufacturer = readUsbInfo(devicePath, "manufacturer");
             QString product = readUsbInfo(devicePath, "product");
-            QString serialNumber = readUsbInfo(devicePath, "serial");
             QString busNumber = QString("%1").arg(readUsbInfo(devicePath, "busnum").toInt(), 3, 10, QChar('0'));
             QString deviceNumber = QString("%1").arg(readUsbInfo(devicePath, "devnum").toInt(), 3, 10, QChar('0'));
 
@@ -63,10 +62,9 @@ private:
 
             item->setText(0, busNumber);
             item->setText(1, deviceNumber);
-            item->setText(2, vendorId);
-            item->setText(3, productId);
-            item->setText(4, description);
-            item->setText(5, serialNumber);
+            item->setText(2, description);
+            item->setText(3, vendorId);
+            item->setText(4, productId);
         }
 
         for (auto it = currentDevices.begin(); it != currentDevices.end();) {
