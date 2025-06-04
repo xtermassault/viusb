@@ -1,8 +1,18 @@
-## viusb - it's still lsusb, but with GUI!
 
-### GUI powered by Qt5-widgets
-![image](https://github.com/user-attachments/assets/b6ce0370-81f4-4d90-9036-05fa8bfe16a6)
 
+## cuteUSB (formerly viusb) - it's like lsusb, but with GUI!
+
+### GUI powered by Qt6-widgets
+
+<div align="center">
+  
+[![Codacy grade](https://img.shields.io/codacy/grade/c6525835f22542f79106563eaad62654?logo=codacy&style=for-the-badge)](https://app.codacy.com/gh/0x64620/viusb/dashboard)
+
+</div>
+
+### Screenshot:
+
+![img.png](img.png)
 ### Building
 
 ```shell
@@ -10,8 +20,7 @@ mkdir build
 cd build
 cmake ..
 make
-./viusb
-
+./usb_viewer
 ```
 
 
