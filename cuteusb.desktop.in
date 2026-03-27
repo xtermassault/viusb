@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=cuteUSB
+Comment=GUI USB device viewer
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/usb_viewer
+Icon=cuteusb
+Terminal=false
+Categories=Utility;System;
+StartupNotify=true
